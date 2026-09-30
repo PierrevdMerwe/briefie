@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="af">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>'n briefie vir jou</title>
+  <meta name="description" content="'n klein verrassing, net vir jou">
+  <meta property="og:title" content="'n briefie vir jou">
+  <meta property="og:description" content="'n klein verrassing, net vir jou">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffdbe8">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Press+Start+2P&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+  <script src="extras.js" defer></script>
+</head>
+<body>
+  <div class="floaties" id="floaties" aria-hidden="true"></div>
+  <button class="mute" id="mute" type="button" aria-label="Mute sounds"></button>
+
+  <!-- 1. the locked envelope -->
+  <main class="scene" id="scene">
+    <h1 class="title">
+      <span>'n briefie vir</span>
+      <!-- the title types out each of these names in turn -->
+      <span class="name"><span id="name" data-names="karla, pookie, pokkel, snokkel, spooks">karla</span><span class="caret">_</span></span>
+    </h1>
+
+    <div class="envelope" id="envelope">
+      <div class="mini-letter" id="miniLetter">
+        <div class="mini-heart" id="miniHeart"></div>
+        <i class="scribble" style="width: 86%"></i>
+        <i class="scribble" style="width: 70%"></i>
+        <i class="scribble" style="width: 92%"></i>
+        <i class="scribble" style="width: 54%"></i>
+      </div>
+      <div class="env-body" id="envBody"></div>
+      <div class="seal" id="seal"></div>
+      <div class="strip" id="strip" role="slider" aria-label="Tear the envelope open" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+      <div class="lock" id="lock"></div>
+    </div>
+
+    <div class="controls">
+      <form class="lock-form" id="lockForm" autocomplete="off">
+        <label class="label" for="pw">password (jou geboortedatum)</label>
+        <div class="pw-row">
+          <input class="pw" id="pw" name="pw" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go">
+          <button class="btn" id="openBtn" type="submit">gaan voort</button>
+        </div>
+        <!-- Optional hint shown under the box. Leave it empty for no hint. -->
+        <p class="hint"></p>
+        <p class="msg" id="msg" role="status" aria-live="polite"></p>
+      </form>
+      <p class="tear-hint" id="tearHint" aria-live="polite"></p>
+    </div>
+  </main>
+
+  <!-- 2. the letter itself (filled in once unlocked) -->
+  <div class="reader" id="reader" hidden>
+    <article class="paper" id="paper">
+      <span class="tape tape-l"></span>
+      <span class="tape tape-r"></span>
+      <div id="letter"></div>
+    </article>
+
+    <!-- The surprises below only appear if their content is sealed (see README). -->
+    <section class="extra reveal" id="cakeSection" hidden>
+      <h2 class="section-title">blaas jou kersies uit!</h2>
+      <div class="cake" id="cake" role="button" tabindex="0" aria-label="Hou vas om die kersies uit te blaas"></div>
+      <p class="cake-msg" id="cakeMsg" aria-live="polite">blaas in die mikrofoon, of hou jou vinger op die koek</p>
+      <div class="cake-actions">
+        <button class="btn" id="micBtn" type="button">gebruik die mikrofoon</button>
+        <button class="btn btn-soft" id="relightBtn" type="button" hidden>steek weer aan</button>
+      </div>
+    </section>
+
+    <section class="extra reveal" id="jarSection" hidden>
+      <h2 class="section-title"><span id="jarTotal">23</span> dinge wat ek<br>van jou liefhet</h2>
+      <p class="extra-sub">in geen spesifieke volgorde nie</p>
+      <div class="card-slot" id="cardSlot" aria-live="polite"></div>
+      <button class="jar" id="jar" type="button" aria-label="Maak die fles oop vir die volgende briefie">
+        <span class="jar-lid" id="jarLid"></span>
+        <span class="jar-body" id="jarBody"></span>
+      </button>
+      <p class="jar-count" id="jarCount"></p>
+      <p class="jar-hint" id="jarHint"></p>
+    </section>
+
+    <section class="extra reveal" id="couponSection" hidden>
+      <h2 class="section-title">bederf-koepons</h2>
+      <p class="extra-sub">druk "ruil in" en ek kry dadelik 'n WhatsApp</p>
+      <div class="coupons" id="coupons"></div>
+    </section>
+
+    <section class="extra reveal" id="postcardSection" hidden>
+      <h2 class="section-title">nog een verrassing...</h2>
+      <div class="postcard-wrap" id="postcardWrap">
+        <div class="postcard">
+          <div class="pc-front">
+            <canvas class="pc-art" id="pcArt" role="img" aria-label="'n poskaart"></canvas>
+            <p class="pc-greeting" id="pcGreeting"></p>
+          </div>
+          <div class="pc-back">
+            <div class="pc-stamp" id="pcStamp"></div>
+            <div class="pc-postmark" aria-hidden="true"><span id="pcPostmark"></span></div>
+            <p class="pc-text" id="pcText"></p>
+            <p class="pc-place" id="pcPlace"></p>
+            <p class="pc-when" id="pcWhen"></p>
+            <p class="pc-to" id="pcTo"></p>
+          </div>
+        </div>
+        <canvas class="scratch" id="scratch" tabindex="0" role="button" aria-label="Krap die kaart oop"></canvas>
+      </div>
+      <p class="extra-sub scratch-hint" id="scratchHint">krap die kaart oop met jou vinger</p>
+    </section>
+
+    <section class="photos" id="photos" hidden>
+      <h2 class="section-title">us, so far</h2>
+      <div class="polaroids" id="polaroids"></div>
+    </section>
+
+    <!-- data-together-since="YYYY-MM-DD" (the day you got together) adds "N days of us" -->
+    <section class="ending" id="ending" data-together-since="">
+      <button class="big-heart" id="bigHeart" type="button" aria-label="Send hearts"></button>
+      <h2 class="section-title">geluk met jou verjaarsdag,<br>pookie!</h2>
+      <p class="love">Love you!</p>
+      <p class="countdown" id="countdown"></p>
+      <button class="btn btn-soft" id="again" type="button">lees dit weer</button>
+    </section>
+  </div>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Photo">
+    <img id="lbImg" alt="" draggable="false">
+    <p class="lb-cap" id="lbCap"></p>
+    <div class="lb-nav">
+      <button class="btn btn-soft lb-step" id="lbPrev" type="button" aria-label="Previous photo">&lt;</button>
+      <button class="btn" id="lbClose" type="button">close</button>
+      <button class="btn btn-soft lb-step" id="lbNext" type="button" aria-label="Next photo">&gt;</button>
+    </div>
+  </dialog>
+</body>
+</html>
